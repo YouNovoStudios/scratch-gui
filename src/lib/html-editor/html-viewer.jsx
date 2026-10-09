@@ -31,16 +31,18 @@ export default class HtmlViewer extends React.Component {
         super(props);
         this.state = {
             html: '',
-            visible: false
+            visible: false,
+            activeTab: 'code' // 'code' veya 'preview'
         };
         this.handleToggle = this.handleToggle.bind(this);
         this.handleGenerate = this.handleGenerate.bind(this);
+        this.setTab = this.setTab.bind(this);
     }
 
     componentDidMount() {
         if (this.props.vm) {
             const dataUri = `data:application/javascript,${encodeURIComponent(extensionCodeText)}`;
-            // TODO: Proje kaydedilip (.sb3) yeniden açılınca bu URL'in tekrar `manuallyTrustExtension` ile 
+            // TODO: Proje kaydedilip (.sb3) yeniden açılınca bu URL'in tekrar \`manuallyTrustExtension\` ile 
             // güvenilir işaretlenmesi gerekir; aksi takdirde izin penceresi çıkabilir veya yüklenmeyebilir.
             manuallyTrustExtension(dataUri);
             this.props.vm.extensionManager.loadExtensionURL(dataUri)
@@ -59,6 +61,10 @@ export default class HtmlViewer extends React.Component {
         this.setState(prev => ({ visible: !prev.visible }));
     }
 
+    setTab(tab) {
+        this.setState({ activeTab: tab });
+    }
+
     render() {
         return (
             <div style={{ position: 'relative', zIndex: 9999 }}>
@@ -71,13 +77,39 @@ export default class HtmlViewer extends React.Component {
                     <div style={{
                         position: 'absolute', top: '40px', left: 0,
                         backgroundColor: '#fff', border: '2px solid #333',
-                        padding: '10px', width: '400px', maxHeight: '500px',
-                        overflow: 'auto', color: '#000', textAlign: 'left'
+                        padding: '10px', width: '450px', maxHeight: '550px',
+                        overflow: 'auto', color: '#000', textAlign: 'left', display: 'flex', flexDirection: 'column'
                     }}>
-                        <button onClick={this.handleGenerate} style={{ marginBottom: '10px', cursor: 'pointer', padding: '5px' }}>Güncelle</button>
-                        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                            {this.state.html || 'Henüz HTML üretilmedi. Kod alanına HTML blokları ekleyip Güncelle butonuna basın.'}
-                        </pre>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                            <div>
+                                <button 
+                                    onClick={() => this.setTab('code')}
+                                    style={{ fontWeight: this.state.activeTab === 'code' ? 'bold' : 'normal', padding: '5px', cursor: 'pointer' }}>
+                                    Kod Görünümü
+                                </button>
+                                <button 
+                                    onClick={() => this.setTab('preview')}
+                                    style={{ fontWeight: this.state.activeTab === 'preview' ? 'bold' : 'normal', padding: '5px', cursor: 'pointer', marginLeft: '5px' }}>
+                                    Canlı Önizleme
+                                </button>
+                            </div>
+                            <button onClick={this.handleGenerate} style={{ cursor: 'pointer', padding: '5px' }}>Güncelle</button>
+                        </div>
+                        
+                        <div style={{ flex: 1, minHeight: '300px', border: '1px solid #ccc', padding: '10px' }}>
+                            {this.state.activeTab === 'code' ? (
+                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+                                    {this.state.html || 'Henüz HTML üretilmedi. Kod alanına HTML blokları ekleyip Güncelle butonuna basın.'}
+                                </pre>
+                            ) : (
+                                <iframe 
+                                    srcDoc={this.state.html || '<p>Henüz HTML üretilmedi.</p>'} 
+                                    sandbox="" 
+                                    style={{ width: '100%', height: '100%', border: 'none' }}
+                                    title="HTML Preview"
+                                />
+                            )}
+                        </div>
                     </div>
                 )}
             </div>
