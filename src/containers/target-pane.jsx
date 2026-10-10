@@ -24,6 +24,7 @@ import randomizeSpritePosition from '../lib/randomize-sprite-position';
 import downloadBlob from '../lib/download-blob';
 import log from '../lib/log';
 import {placeInViewport} from '../lib/backpack/code-payload.js';
+import {HTML_EDITOR_MODE} from '../lib/html-editor/html-mode';
 
 class TargetPane extends React.Component {
     constructor (props) {
@@ -53,6 +54,18 @@ class TargetPane extends React.Component {
     }
     componentDidMount () {
         this.props.vm.addListener('BLOCK_DRAG_END', this.handleBlockDragEnd);
+        if (HTML_EDITOR_MODE) {
+            // HTML modunda sahne seçili kalırsa ilk kuklaya otomatik geç.
+            // vm.editingTarget proje yüklenince sahneye (isStage=true) işaret edebilir;
+            // bu durumda ilk kukla sprite'ı bulup seçiyoruz.
+            const editingTarget = this.props.vm.editingTarget;
+            if (editingTarget && editingTarget.isStage) {
+                const sprites = this.props.vm.runtime.targets.filter(t => !t.isStage);
+                if (sprites.length > 0) {
+                    this.props.vm.setEditingTarget(sprites[0].id);
+                }
+            }
+        }
     }
     componentWillUnmount () {
         this.props.vm.removeListener('BLOCK_DRAG_END', this.handleBlockDragEnd);

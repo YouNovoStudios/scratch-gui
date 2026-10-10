@@ -7,6 +7,7 @@ import SpriteLibrary from '../../containers/sprite-library.jsx';
 import SpriteSelectorComponent from '../sprite-selector/sprite-selector.jsx';
 import StageSelector from '../../containers/stage-selector.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
+import {HTML_EDITOR_MODE} from '../../lib/html-editor/html-mode';
 
 import styles from './target-pane.css';
 
@@ -78,27 +79,29 @@ const TargetPane = ({
             onSpriteUpload={onSpriteUpload}
             onSurpriseSpriteClick={onSurpriseSpriteClick}
         />
-        <div className={styles.stageSelectorWrapper}>
-            {stage.id && <StageSelector
-                asset={
-                    stage.costume &&
-                    stage.costume.asset
-                }
-                backdropCount={stage.costumeCount}
-                id={stage.id}
-                selected={stage.id === editingTarget}
-                onSelect={onSelectSprite}
-            />}
-            <div>
-                {spriteLibraryVisible ? (
-                    <SpriteLibrary
-                        vm={vm}
-                        onActivateBlocksTab={onActivateBlocksTab}
-                        onRequestClose={onRequestCloseSpriteLibrary}
-                    />
-                ) : null}
+        {!HTML_EDITOR_MODE && (
+            <div className={styles.stageSelectorWrapper}>
+                {stage.id && <StageSelector
+                    asset={
+                        stage.costume &&
+                        stage.costume.asset
+                    }
+                    backdropCount={stage.costumeCount}
+                    id={stage.id}
+                    selected={stage.id === editingTarget}
+                    onSelect={onSelectSprite}
+                />}
+                <div>
+                    {spriteLibraryVisible ? (
+                        <SpriteLibrary
+                            vm={vm}
+                            onActivateBlocksTab={onActivateBlocksTab}
+                            onRequestClose={onRequestCloseSpriteLibrary}
+                        />
+                    ) : null}
+                </div>
             </div>
-        </div>
+        )}
     </div>
 );
 

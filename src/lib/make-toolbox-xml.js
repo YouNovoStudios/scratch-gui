@@ -1,5 +1,6 @@
 import LazyScratchBlocks from './tw-lazy-scratch-blocks';
 import {defaultBlockColors} from './themes';
+import {HTML_EDITOR_MODE} from './html-editor/html-mode';
 
 const categorySeparator = '<sep gap="36"/>';
 
@@ -811,12 +812,12 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
 
     const everything = [
         xmlOpen,
-        motionXML, gap,
-        looksXML, gap,
-        soundXML, gap,
+        ...(HTML_EDITOR_MODE ? [] : [motionXML, gap]),
+        ...(HTML_EDITOR_MODE ? [] : [looksXML, gap]),
+        ...(HTML_EDITOR_MODE ? [] : [soundXML, gap]),
         eventsXML, gap,
         controlXML, gap,
-        sensingXML, gap,
+        ...(HTML_EDITOR_MODE ? [] : [sensingXML, gap]),
         operatorsXML, gap,
         variablesXML, gap,
         myBlocksXML
