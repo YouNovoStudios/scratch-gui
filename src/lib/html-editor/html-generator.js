@@ -25,17 +25,22 @@ function getArgumentText(block, argName, target) {
 }
 
 function processBlock(blockId, target, indentLevel) {
-    if (!blockId) return '';
+    if (!blockId) return { html: '', links: [], scripts: [] };
     const block = target.blocks.getBlock(blockId);
-    if (!block) return '';
+    if (!block) return { html: '', links: [], scripts: [] };
 
     let html = '';
+    let links = [];
+    let scripts = [];
     const indent = '  '.repeat(indentLevel);
 
     if (block.opcode === 'htmlblocks_divBlock') {
         html += `${indent}<div>\n`;
         if (block.inputs['SUBSTACK'] && block.inputs['SUBSTACK'].block) {
-            html += processBlock(block.inputs['SUBSTACK'].block, target, indentLevel + 1);
+            const subRes = processBlock(block.inputs['SUBSTACK'].block, target, indentLevel + 1);
+            html += subRes.html;
+            links.push(...subRes.links);
+            scripts.push(...subRes.scripts);
         }
         html += `${indent}</div>\n`;
     } else if (block.opcode === 'htmlblocks_h1Block') {
@@ -44,19 +49,34 @@ function processBlock(blockId, target, indentLevel) {
     } else if (block.opcode === 'htmlblocks_pBlock') {
         const text = getArgumentText(block, 'TEXT', target);
         html += `${indent}<p>${text}</p>\n`;
+    } else if (block.opcode === 'htmlblocks_linkStyleBlock') {
+        const file = getArgumentText(block, 'FILE', target);
+        links.push(file);
+    } else if (block.opcode === 'htmlblocks_linkScriptBlock') {
+        const file = getArgumentText(block, 'FILE', target);
+        scripts.push(file);
     } else {
         // Unknown or built-in blocks just continue
     }
 
     if (block.next) {
-        html += processBlock(block.next, target, indentLevel);
+        const nextRes = processBlock(block.next, target, indentLevel);
+        html += nextRes.html;
+        links.push(...nextRes.links);
+        scripts.push(...nextRes.scripts);
     }
 
-    return html;
+    return { html, links, scripts };
 }
 
-export function generateHTML(vm) {
-    const target = vm.editingTarget;
+export function generateHTML(vm, targetId = null) {
+    let target = null;
+    if (targetId) {
+        target = vm.runtime.getTargetById(targetId);
+    }
+    if (!target) {
+        target = vm.editingTarget;
+    }
     if (!target || !target.blocks) return '';
 
     let topLevelIds = [];
@@ -74,9 +94,35 @@ export function generateHTML(vm) {
         return a.x - b.x;
     });
 
-    let html = '';
+    let bodyHtml = '';
+    let allLinks = [];
+    let allScripts = [];
+
     for (const block of topLevelBlocks) {
-        html += processBlock(block.id, target, 0);
+        const res = processBlock(block.id, target, 2);
+        bodyHtml += res.html;
+        allLinks.push(...res.links);
+        allScripts.push(...res.scripts);
     }
-    return html.trim();
+
+    let resultHtml = `<!DOCTYPE html>\n<html lang="tr">\n<head>\n  <meta charset="UTF-8">\n`;
+    
+    // Deduplicate links and scripts
+    allLinks = [...new Set(allLinks)];
+    allScripts = [...new Set(allScripts)];
+
+    for (const link of allLinks) {
+        if (link) {
+            resultHtml += `  <link rel="stylesheet" href="${escapeHTML(link)}">\n`;
+        }
+    }
+    resultHtml += `</head>\n<body>\n${bodyHtml}`;
+    for (const script of allScripts) {
+        if (script) {
+            resultHtml += `  <script src="${escapeHTML(script)}"></script>\n`;
+        }
+    }
+    resultHtml += `</body>\n</html>`;
+
+    return resultHtml;
 }

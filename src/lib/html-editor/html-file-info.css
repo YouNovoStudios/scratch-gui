@@ -1,0 +1,58 @@
+@import "../../css/colors.css";
+
+.html-file-info {
+    padding: 0.5rem;
+    height: auto;
+    min-height: 4rem;
+    background-color: $ui-secondary;
+}
+
+.html-file-row-primary {
+    margin-bottom: 0.5rem;
+}
+
+.html-file-row-secondary {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.html-file-input {
+    width: 100%;
+}
+
+.html-file-number-input {
+    width: 3.5rem;
+    text-align: center;
+}
+
+.presets-row {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: space-between;
+}
+
+.preset-button {
+    background: $ui-white;
+    border: 1px solid $ui-black-transparent;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    flex: 1;
+    color: $text-primary;
+}
+
+.preset-button:hover {
+    background: $ui-black-transparent;
+}
+
+.preset-active {
+    background: $looks-secondary;
+    color: white;
+    border-color: $looks-secondary;
+}
+
+.preset-active:hover {
+    background: $looks-secondary-dark;
+}

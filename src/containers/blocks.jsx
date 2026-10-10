@@ -452,11 +452,15 @@ class Blocks extends React.Component {
                 this.props.vm.runtime.getBlocksXML(target),
                 this.props.theme
             );
+            const fileExtMatch = target.sprite.name.match(/\.([^.]+)$/);
+            const fileExtension = fileExtMatch ? fileExtMatch[1].toLowerCase() : '';
+
             return makeToolboxXML(false, target.isStage, target.id, dynamicBlocksXML,
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
-                this.props.theme.getBlockColors()
+                this.props.theme.getBlockColors(),
+                fileExtension
             );
         } catch {
             return null;

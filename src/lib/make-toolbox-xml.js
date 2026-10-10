@@ -771,10 +771,11 @@ const xmlClose = '</xml>';
  * @param {?string} backdropName - The name of the default selected backdrop dropdown.
  * @param {?string} soundName -  The name of the default selected sound dropdown.
  * @param {?object} colors - The colors for the theme.
+ * @param {?string} fileExtension - The extension of the selected target's name, to filter toolbox in HTML mode.
  * @returns {string} - a ScratchBlocks-style XML document for the contents of the toolbox.
  */
 const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categoriesXML = [],
-    costumeName = '', backdropName = '', soundName = '', colors = defaultBlockColors) {
+    costumeName = '', backdropName = '', soundName = '', colors = defaultBlockColors, fileExtension = '') {
     isStage = isInitialSetup || isStage;
     const gap = [categorySeparator];
 
@@ -811,10 +812,38 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
     }
 
     const htmlXML = moveCategory('htmlblocks');
+    const cssXML = moveCategory('cssblocks');
+
+    if (HTML_EDITOR_MODE) {
+        if (fileExtension === 'html') {
+            return [
+                xmlOpen,
+                ...(htmlXML ? [htmlXML, gap] : []),
+                xmlClose
+            ].join('\n');
+        } else if (fileExtension === 'css') {
+            return [
+                xmlOpen,
+                ...(cssXML ? [cssXML, gap] : []),
+                xmlClose
+            ].join('\n');
+        } else if (fileExtension === 'js') {
+            return [
+                xmlOpen,
+                eventsXML, gap,
+                controlXML, gap,
+                operatorsXML, gap,
+                variablesXML, gap,
+                myBlocksXML,
+                xmlClose
+            ].join('\n');
+        }
+    }
 
     const everything = [
         xmlOpen,
         ...(htmlXML ? [htmlXML, gap] : []),
+        ...(cssXML ? [cssXML, gap] : []),
         ...(HTML_EDITOR_MODE ? [] : [motionXML, gap]),
         ...(HTML_EDITOR_MODE ? [] : [looksXML, gap]),
         ...(HTML_EDITOR_MODE ? [] : [soundXML, gap]),

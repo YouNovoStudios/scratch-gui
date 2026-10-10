@@ -4,10 +4,12 @@ import {defineMessages, injectIntl, intlShape} from 'react-intl';
 
 import Box from '../box/box.jsx';
 import SpriteInfo from '../../containers/sprite-info.jsx';
+import HtmlFileInfo from '../../lib/html-editor/html-file-info.jsx';
 import SpriteList from './sprite-list.jsx';
 import ActionMenu from '../action-menu/action-menu.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants';
 import {isRtl} from '@turbowarp/scratch-l10n';
+import {HTML_EDITOR_MODE} from '../../lib/html-editor/html-mode';
 
 import styles from './sprite-selector.css';
 
@@ -81,24 +83,32 @@ const SpriteSelectorComponent = function (props) {
             {...componentProps}
         >
 
-            <SpriteInfo
-                direction={selectedSprite.direction}
-                disabled={spriteInfoDisabled}
-                name={selectedSprite.name}
-                rotationStyle={selectedSprite.rotationStyle}
-                size={selectedSprite.size}
-                stageSize={stageSize}
-                visible={selectedSprite.visible}
-                x={selectedSprite.x}
-                y={selectedSprite.y}
-                onChangeDirection={onChangeSpriteDirection}
-                onChangeName={onChangeSpriteName}
-                onChangeRotationStyle={onChangeSpriteRotationStyle}
-                onChangeSize={onChangeSpriteSize}
-                onChangeVisibility={onChangeSpriteVisibility}
-                onChangeX={onChangeSpriteX}
-                onChangeY={onChangeSpriteY}
-            />
+            {HTML_EDITOR_MODE ? (
+                <HtmlFileInfo
+                    disabled={spriteInfoDisabled}
+                    name={selectedSprite.name}
+                    onChangeName={onChangeSpriteName}
+                />
+            ) : (
+                <SpriteInfo
+                    direction={selectedSprite.direction}
+                    disabled={spriteInfoDisabled}
+                    name={selectedSprite.name}
+                    rotationStyle={selectedSprite.rotationStyle}
+                    size={selectedSprite.size}
+                    stageSize={stageSize}
+                    visible={selectedSprite.visible}
+                    x={selectedSprite.x}
+                    y={selectedSprite.y}
+                    onChangeDirection={onChangeSpriteDirection}
+                    onChangeName={onChangeSpriteName}
+                    onChangeRotationStyle={onChangeSpriteRotationStyle}
+                    onChangeSize={onChangeSpriteSize}
+                    onChangeVisibility={onChangeSpriteVisibility}
+                    onChangeX={onChangeSpriteX}
+                    onChangeY={onChangeSpriteY}
+                />
+            )}
 
             <SpriteList
                 editingTarget={editingTarget}
