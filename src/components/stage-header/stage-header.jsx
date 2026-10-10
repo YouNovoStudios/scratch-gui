@@ -22,6 +22,7 @@ import settingsIcon from './icon--settings.svg';
 import styles from './stage-header.css';
 
 import FullscreenAPI from '../../lib/tw-fullscreen-api';
+import { HTML_EDITOR_MODE } from '../../lib/html-editor/html-mode';
 
 const messages = defineMessages({
     largeStageSizeMessage: {
@@ -145,7 +146,15 @@ const StageHeaderComponent = function (props) {
                     className={styles.stageMenuWrapper}
                     style={{width: stageDimensions.width}}
                 >
-                    <Controls vm={vm} />
+                    {HTML_EDITOR_MODE ? (
+                        <div className={styles.unselectWrapper}>
+                            <Button className={styles.stageButton} onClick={() => vm.emit('PROJECT_CHANGED')}>
+                                <span style={{padding: '0.5rem', fontWeight: 'bold', color: '#575E75'}}>Yenile</span>
+                            </Button>
+                        </div>
+                    ) : (
+                        <Controls vm={vm} />
+                    )}
                     <div
                         className={styles.fullscreenButtonsRow}
                         key="fullscreen" // addons require the HTML element to be not be re-used by in-editor buttons
@@ -198,10 +207,18 @@ const StageHeaderComponent = function (props) {
                 style={{minWidth: `${Math.max(stageDimensions.width, getMinWidth(stageSize)) + 2}px`}}
             >
                 <Box className={styles.stageMenuWrapper}>
-                    <Controls
-                        vm={vm}
-                        isSmall={stageSizeMode === STAGE_SIZE_MODES.small}
-                    />
+                    {HTML_EDITOR_MODE ? (
+                        <div className={styles.unselectWrapper}>
+                            <Button className={styles.stageButton} onClick={() => vm.emit('PROJECT_CHANGED')}>
+                                <span style={{padding: '0.5rem', fontWeight: 'bold', color: '#575E75'}}>Yenile</span>
+                            </Button>
+                        </div>
+                    ) : (
+                        <Controls
+                            vm={vm}
+                            isSmall={stageSizeMode === STAGE_SIZE_MODES.small}
+                        />
+                    )}
                     <div
                         className={styles.stageSizeRow}
                         key="editor" // addons require the HTML element to be not be re-used by in-editor buttons

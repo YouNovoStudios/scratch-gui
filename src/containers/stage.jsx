@@ -443,7 +443,7 @@ class Stage extends React.Component {
     }
     render () {
         const {
-            vm, // eslint-disable-line no-unused-vars
+            vm, // passing vm now
             onActivateColorPicker, // eslint-disable-line no-unused-vars
             disableEditingTargetChange, // eslint-disable-line no-unused-vars
             ...props
@@ -457,6 +457,7 @@ class Stage extends React.Component {
                 question={this.state.question}
                 onDoubleClick={this.handleDoubleClick}
                 onQuestionAnswered={this.handleQuestionAnswered}
+                vm={vm}
                 {...props}
             />
         );

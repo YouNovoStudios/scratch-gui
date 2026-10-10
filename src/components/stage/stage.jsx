@@ -14,6 +14,9 @@ import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import {getStageDimensions, getMinWidth} from '../../lib/screen-utils.js';
 import styles from './stage.css';
 
+import { HTML_EDITOR_MODE } from '../../lib/html-editor/html-mode';
+import HtmlPreview from '../../lib/html-editor/html-preview.jsx';
+
 const StageComponent = props => {
     const {
         canvas,
@@ -68,10 +71,12 @@ const StageComponent = props => {
                         domElement={canvas}
                         style={{
                             height: stageDimensions.height,
-                            width: stageDimensions.width
+                            width: stageDimensions.width,
+                            visibility: HTML_EDITOR_MODE ? 'hidden' : 'visible'
                         }}
                         {...boxProps}
                     />
+                    {HTML_EDITOR_MODE && props.vm && <HtmlPreview vm={props.vm} />}
                     <Box className={styles.customOverlays}>
                         <DOMElementRenderer domElement={props.overlay} />
                     </Box>
