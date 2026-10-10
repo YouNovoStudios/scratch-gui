@@ -121,3 +121,74 @@
 [dir="rtl"] .number {
     right: 0.15rem;
 }
+
+/* -------------------------------------------------------
+   HTML_EDITOR_MODE — compact file list view
+   These classes are only applied when HTML_EDITOR_MODE=true.
+   They override the grid-card styles to a single-row list layout.
+------------------------------------------------------- */
+
+/* Reset the card-style layout to a flat row */
+.file-list-item {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    border-radius: 4px;
+    border: none;
+    padding: 0 8px;
+    gap: 6px;
+    text-align: left;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+/* Icon slot */
+.file-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+/* Override spriteInfo inside list-item */
+.file-list-item .sprite-info {
+    padding: 0;
+    border-radius: 0;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.file-list-item .sprite-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Hover state */
+.file-list-item:hover {
+    border: none;
+    background: $ui-black-transparent;
+}
+
+/* Selected state: accent-colored left border + subtle bg */
+.file-list-item.is-selected {
+    border: none;
+    border-left: 3px solid $looks-secondary;
+    box-shadow: none;
+    background: $looks-light-transparent;
+}
+
+.file-list-item.is-selected .sprite-info {
+    background: transparent;
+    color: inherit;
+}
+
+[dir="rtl"] .file-list-item.is-selected {
+    border-left: none;
+    border-right: 3px solid $looks-secondary;
+}

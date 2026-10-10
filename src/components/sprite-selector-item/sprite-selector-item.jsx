@@ -7,6 +7,8 @@ import styles from './sprite-selector-item.css';
 import {ContextMenuTrigger} from 'react-contextmenu';
 import {DangerousMenuItem, ContextMenu, MenuItem} from '../context-menu/context-menu.jsx';
 import {FormattedMessage} from 'react-intl';
+import {HTML_EDITOR_MODE} from '../../lib/html-editor/html-mode';
+import {FileIcon} from '../../lib/html-editor/file-icons.jsx';
 
 // react-contextmenu requires unique id to match trigger and context menu
 let contextMenuId = 0;
@@ -15,7 +17,8 @@ const SpriteSelectorItem = props => (
     <ContextMenuTrigger
         attributes={{
             className: classNames(props.className, styles.spriteSelectorItem, {
-                [styles.isSelected]: props.selected
+                [styles.isSelected]: props.selected,
+                [styles.fileListItem]: HTML_EDITOR_MODE
             }),
             onClick: props.onClick,
             onMouseEnter: props.onMouseEnter,
@@ -30,7 +33,11 @@ const SpriteSelectorItem = props => (
         {typeof props.number === 'undefined' ? null : (
             <div className={styles.number}>{props.number}</div>
         )}
-        {props.costumeURL ? (
+        {HTML_EDITOR_MODE ? (
+            <span className={styles.fileIcon}>
+                <FileIcon name={props.name} />
+            </span>
+        ) : (props.costumeURL ? (
             <div className={styles.spriteImageOuter}>
                 <div className={styles.spriteImageInner}>
                     <img
@@ -41,14 +48,14 @@ const SpriteSelectorItem = props => (
                     />
                 </div>
             </div>
-        ) : null}
+        ) : null)}
         <div className={styles.spriteInfo}>
             <div className={styles.spriteName}>{props.name}</div>
             {props.details ? (
                 <div className={styles.spriteDetails}>{props.details}</div>
             ) : null}
         </div>
-        {(props.selected && props.onDeleteButtonClick) ? (
+        {(!HTML_EDITOR_MODE && props.selected && props.onDeleteButtonClick) ? (
             <DeleteButton
                 className={styles.deleteButton}
                 onClick={props.onDeleteButtonClick}

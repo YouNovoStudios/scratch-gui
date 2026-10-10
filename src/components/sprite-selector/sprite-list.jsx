@@ -9,6 +9,7 @@ import SpriteSelectorItem from '../../containers/sprite-selector-item.jsx';
 import SortableHOC from '../../lib/sortable-hoc.jsx';
 import SortableAsset from '../asset-panel/sortable-asset.jsx';
 import ThrottledPropertyHOC from '../../lib/throttled-property-hoc.jsx';
+import {HTML_EDITOR_MODE} from '../../lib/html-editor/html-mode';
 
 import styles from './sprite-selector.css';
 
@@ -43,7 +44,9 @@ const SpriteList = function (props) {
             componentRef={containerRef}
         >
             <Box
-                className={styles.itemsWrapper}
+                className={classNames(styles.itemsWrapper, {
+                    [styles.fileListWrapper]: HTML_EDITOR_MODE
+                })}
             >
                 {items.map((sprite, index) => {
 
@@ -71,7 +74,9 @@ const SpriteList = function (props) {
                     return (
                         <SortableAsset
                             className={classNames(styles.spriteWrapper, {
-                                [styles.placeholder]: isSpriteDrag && index === draggingIndex})}
+                                [styles.placeholder]: isSpriteDrag && index === draggingIndex,
+                                [styles.fileListWrapperItem]: HTML_EDITOR_MODE
+                            })}
                             index={isSpriteDrag ? ordering.indexOf(index) : index}
                             key={sprite.name}
                             onAddSortable={onAddSortable}

@@ -125,3 +125,24 @@
     background: black;
     filter: opacity(15%) brightness(0%);
 }
+
+/* -------------------------------------------------------
+   HTML_EDITOR_MODE — file list layout overrides
+   Applied to the sprite-wrapper and items-wrapper so items
+   stack vertically instead of in a grid.
+------------------------------------------------------- */
+.file-list-wrapper {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 4px 0;
+    overflow: hidden;
+}
+
+.file-list-wrapper-item {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+}
