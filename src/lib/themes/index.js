@@ -4,6 +4,7 @@ import * as accentPurple from './accent/purple';
 import * as accentBlue from './accent/blue';
 import * as accentRed from './accent/red';
 import * as accentRainbow from './accent/rainbow';
+import * as accentCera from './accent/cera';
 
 import * as guiLight from './gui/light';
 import * as guiDark from './gui/dark';
@@ -12,17 +13,21 @@ import * as blocksThree from './blocks/three';
 import * as blocksHighContrast from './blocks/high-contrast';
 import * as blocksDark from './blocks/dark';
 
+import {HTML_EDITOR_MODE} from '../html-editor/html-mode';
+
 const ACCENT_PURPLE = 'purple';
 const ACCENT_BLUE = 'blue';
 const ACCENT_RED = 'red';
 const ACCENT_RAINBOW = 'rainbow';
+const ACCENT_CERA = 'cera';
 const ACCENT_MAP = {
     [ACCENT_PURPLE]: accentPurple,
     [ACCENT_BLUE]: accentBlue,
     [ACCENT_RED]: accentRed,
-    [ACCENT_RAINBOW]: accentRainbow
+    [ACCENT_RAINBOW]: accentRainbow,
+    [ACCENT_CERA]: accentCera
 };
-const ACCENT_DEFAULT = ACCENT_RED;
+const ACCENT_DEFAULT = HTML_EDITOR_MODE ? ACCENT_CERA : ACCENT_RED;
 
 const GUI_LIGHT = 'light';
 const GUI_DARK = 'dark';
@@ -114,12 +119,17 @@ class Theme {
     }
 
     getBlockColors () {
-        return defaultsDeep(
+        const colors = defaultsDeep(
             {},
             ACCENT_MAP[this.accent].blockColors,
             GUI_MAP[this.gui].blockColors,
             BLOCKS_MAP[this.blocks].colors
         );
+        if (HTML_EDITOR_MODE) {
+            colors.textField = '#1e1e1e';
+            colors.textFieldText = '#ffffff';
+        }
+        return colors;
     }
 
     getExtensions () {
