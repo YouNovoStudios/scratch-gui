@@ -810,8 +810,11 @@ const makeToolboxXML = function (isInitialSetup, isStage = true, targetId, categ
         turbowarpXML = turbowarpXML.replace('<block', `${extraTurboWarpBlocks}<block`);
     }
 
+    const htmlXML = moveCategory('html');
+
     const everything = [
         xmlOpen,
+        ...(htmlXML ? [htmlXML, gap] : []),
         ...(HTML_EDITOR_MODE ? [] : [motionXML, gap]),
         ...(HTML_EDITOR_MODE ? [] : [looksXML, gap]),
         ...(HTML_EDITOR_MODE ? [] : [soundXML, gap]),
